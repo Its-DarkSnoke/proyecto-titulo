@@ -1,0 +1,59 @@
+# ACTA DE CONSTITUCIÓN DEL PROYECTO (PROJECT CHARTER)
+
+| Información General | Detalle |
+| :--- | :--- |
+| **Nombre del Proyecto** | [Nombre del proyecto de titulación] |
+| **Institución / Carrera** | Duoc UC / Ingeniería Informática |
+| **Profesor Guía / Sponsor**| [Nombre del docente guía o cliente/organización] |
+| **Equipo de Proyecto** | Felipe Calhueque, [Nombre integrante 2], [Nombre integrante 3] |
+| **Fecha de Emisión** | Agosto, 2026 |
+| **Versión** | 1.0 |
+
+---
+
+### 1. Justificación y Propósito
+* **Problema u Oportunidad:** Descripción clara de la necesidad o brecha detectada en el negocio o área técnica.
+* **Propósito:** Justificación del por qué este proyecto resuelve de manera óptima dicha problemática mediante tecnología y análisis de datos.
+
+### 2. Objetivos del Proyecto
+* **Objetivo General:** (Formato SMART: Específico, Medible, Alcanzable, Relevante y con Límite de Tiempo).
+* **Objetivos Específicos:**
+  1. Diagnosticar y estructurar las fuentes de datos necesarias.
+  2. Diseñar e implementar la arquitectura / modelo de solución en [Python/GCP/etc.].
+  3. Validar y desplegar métricas de evaluación o visualizaciones de negocio.
+
+### 3. Alcance Preliminar y Entregables Clave
+* **Dentro del Alcance (In Scope):** Listado explícito de lo que el sistema/proyecto construirá.
+* **Fuera del Alcance (Out of Scope):** Límites claros para evitar sobrecarga de trabajo no evaluable.
+* **Entregables:**
+  * Informe de Diagnóstico y Planificación (Fase 1).
+  * Repositorio de código modular y pipelines (Fase 2).
+  * Informe Final, Manuales y Presentación de Defensa (Fase 3).
+
+### 4. Cronograma de Hitos Principales
+| Hito / Fase | Descripción del Entregable | Fecha Estimada |
+| :--- | :--- | :--- |
+| **Hito 1** | Aprobación de Requerimientos y Diagnóstico | [Fecha] |
+| **Hito 2** | Avance de Desarrollo y Pruebas Iniciales | [Fecha] |
+| **Hito 3** | Entrega de Memoria Final y Repositorio Oficial | [Fecha] |
+
+### 5. Supuestos y Restricciones
+* **Supuestos:** Disponibilidad de datos históricos, acceso continuo a plataformas cloud, etc.
+* **Restricciones:** Plazo límite académico, recursos de cómputo, uso de herramientas predeterminadas.
+
+### 6. Riesgos Iniciales de Alto Nivel
+* Retrasos en la obtención o limpieza de datasets.
+* Desajustes de compatibilidad en entornos de desarrollo.
+
+### 7. Roles y Responsabilidades
+| Rol | Integrante | Responsabilidad Principal |
+| :--- | :--- | :--- |
+| **Project Lead / Data Engineer** | Felipe Calhueque | Arquitectura de datos, gestión del repo y pipelines. |
+| **Data Analyst / Tester** | [Nombre 2] | Análisis exploratorio, visualización y pruebas. |
+| **Documentación / QA** | [Nombre 3] | Redacción formal, manuales de usuario y actas. |
+
+---
+
+### 8. Aprobación Formal
+* **Firma / Aprobación Profesor Guía:** _____________________
+* **Firma Representante del Equipo:** _____________________
