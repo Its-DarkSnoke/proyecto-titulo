@@ -111,32 +111,12 @@ def predecir():
         diagnostico = "ANOMALÍA BENIGNA"
         color_alerta = "#28a745"
 
-    return f"""
-    <div style="font-family: Arial; padding: 40px;">
-        <h2 style="color: {color_alerta};">
-            Diagnóstico Calculado: {diagnostico}
-        </h2>
-
-        <p>
-            <strong>Paciente:</strong> {nombre} (RUT: {rut})
-        </p>
-
-        <p>
-            <strong>Vector analizado:</strong>
-            [Radio: {radio}, Textura: {textura},
-            Perímetro: {perimetro}, Área: {area}]
-        </p>
-
-        <br>
-
-        <a href="/dashboard"
-           style="background: #0056b3; color: white;
-                  padding: 10px 15px; text-decoration: none;
-                  border-radius: 4px;">
-            Volver al Panel Médico
-        </a>
-    </div>
-    """
+    return render_template(
+        'resultado.html', diagnostico=diagnostico, color_alerta=color_alerta,
+        nombre=nombre, rut=rut,
+        medidas=[('Radio medio', radio), ('Textura media', textura),
+                 ('Perímetro medio', perimetro), ('Área media', area)]
+    )
 
 
 @app.route('/logout')

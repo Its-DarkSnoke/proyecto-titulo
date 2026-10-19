@@ -1,0 +1,52 @@
+/* Layout rules shared by the dashboard and standalone pages. */
+* { box-sizing: border-box; }
+body { margin: 0; }
+input, button, select, textarea { font: inherit; }
+input { min-width: 0; max-width: 100%; }
+a, button { touch-action: manipulation; }
+:focus-visible { outline: 3px solid #93c5fd; outline-offset: 3px; }
+.dashboard { display: flex; height: 100dvh; }
+.dashboard > aside { width: 16rem; flex: 0 0 16rem; }
+.dashboard > main { min-width: 0; }
+.dashboard main .grid > *, .dashboard form .grid > * { min-width: 0; }
+.standalone { min-height: 100vh; min-height: 100dvh; background: #f4f7fe; color: #1f2937; font-family: Arial, sans-serif; padding: 32px 20px; display: grid; place-items: center; }
+.standalone-card { width: 100%; max-width: 720px; background: white; padding: clamp(20px, 5vw, 40px); border: 1px solid #e2e8f0; border-radius: 24px; overflow-wrap: anywhere; }
+.standalone-card h1 { font-size: clamp(23px, 5vw, 30px); line-height: 1.3; }
+.resultado-alerta { color: #dc3545; }
+.resultado-favorable { color: #28a745; }
+.standalone-card p { line-height: 1.6; }
+.back-link { display: inline-flex; justify-content: center; align-items: center; min-height: 48px; background: #2563eb; color: white; padding: 12px 18px; border-radius: 12px; text-decoration: none; }
+.measurements { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 24px 0; }
+.measurements > div { padding: 16px; background: #f8fafc; border-radius: 12px; }
+.measurements dt { color: #64748b; font-size: 14px; }
+.measurements dd { margin: 8px 0 0; font-size: 20px; font-weight: bold; }
+@media (max-width: 1023px) {
+  .dashboard { display: block; height: auto; min-height: 100dvh; overflow: visible; }
+  .dashboard > aside { width: 100%; box-shadow: 0 2px 10px #1f293708; }
+  .dashboard > aside > div { padding: 16px 20px; }
+  .dashboard aside h1 { margin-bottom: 16px; font-size: 26px; }
+  .dashboard aside nav { display: flex; flex-wrap: wrap; gap: 8px; }
+  .dashboard aside nav > a { margin: 0; min-height: 48px; }
+  .dashboard aside > div:last-child { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 12px; padding-bottom: 12px; }
+  .dashboard aside > div:last-child > div { min-width: 0; margin-bottom: 0; }
+  .dashboard aside > div:last-child > a { flex-shrink: 0; padding: 12px 0; }
+  .dashboard aside .rounded-full { flex-shrink: 0; }
+  .dashboard > main { padding: 28px 20px; overflow: visible; }
+  .dashboard main header { margin-bottom: 24px; }
+  .dashboard main h2 { font-size: clamp(24px, 4vw, 30px); line-height: 1.25; overflow-wrap: anywhere; }
+  .dashboard main > .grid { gap: 20px; }
+  .dashboard main > .grid > div { padding: 24px; }
+  .dashboard input { font-size: 16px; }
+}
+@media (max-width: 479px) {
+  .dashboard > aside > div { padding-left: 16px; padding-right: 16px; }
+  .dashboard > main { padding: 24px 12px; }
+  .dashboard main > .grid > div { padding: 20px 16px; border-radius: 20px; }
+  .dashboard form .grid { gap: 18px; }
+  .dashboard aside nav > a { padding: 12px; font-size: 14px; }
+  .dashboard aside > div:last-child { gap: 10px; }
+  .dashboard aside > div:last-child > a { font-size: 12px; }
+  .dashboard aside > div:last-child .w-10 { display: none; }
+  .measurements { grid-template-columns: 1fr; }
+  .back-link { width: 100%; }
+}

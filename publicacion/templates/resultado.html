@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultado · OncoPredict</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='responsive.css') }}">
+</head>
+<body class="standalone">
+  <main class="standalone-card">
+    <p style="color: #2563eb; font-weight: bold;">OncoPredict</p>
+    <h1 class="{{ 'resultado-alerta' if color_alerta == '#dc3545' else 'resultado-favorable' }}">Diagnóstico Calculado: {{ diagnostico }}</h1>
+    <p><strong>Paciente:</strong> {{ nombre }} (RUT: {{ rut }})</p>
+    <dl class="measurements">
+      {% for etiqueta, valor in medidas %}
+      <div><dt>{{ etiqueta }}</dt><dd>{{ valor }}</dd></div>
+      {% endfor %}
+    </dl>
+    <a class="back-link" href="{{ url_for('dashboard') }}">Volver al Panel Médico</a>
+  </main>
+</body>
+</html>
