@@ -1,0 +1,63 @@
+{% extends 'base_v3.html' %}
+{% block contenido %}
+  <div class="cabecera">
+    <div>
+      <p class="etiqueta">PANEL MÉDICO · {{ 'MAMA' if tipo == 'mama' else 'PULMÓN' }}</p>
+      <h1>{{ 'Oncología de mama' if tipo == 'mama' else 'Oncología de pulmón' }}</h1>
+      <p>Administra las fichas y el seguimiento de tus pacientes.</p>
+    </div>
+    <a class="boton" href="{{ url_for('clinica.agenda_doctor') }}">+ Gestionar agenda</a>
+  </div>
+  {% if tipo == 'pulmon' %}
+    <div class="aviso">
+      El espacio de pulmón permite gestionar pacientes. Las predicciones estarán disponibles cuando se incorpore un modelo específico.
+    </div>
+  {% endif %}
+  <section class="tarjeta">
+    <h2>Mis pacientes <span class="contador">{{ pacientes|length }}</span></h2>
+    <div class="tabla">
+      <table>
+        <thead>
+          <tr>
+            <th>
+              Paciente
+            </th>
+            <th>
+              RUT
+            </th>
+            <th>
+              Correo
+            </th>
+            <th>
+              Acción
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for paciente in pacientes %}
+            <tr>
+              <td>
+                {{ paciente.nombre }}
+              </td>
+              <td>
+                {{ paciente.rut }}
+              </td>
+              <td>
+                {{ paciente.correo }}
+              </td>
+              <td>
+                <a class="enlace" href="{{ url_for('ficha_doctor', paciente_id=paciente.id) }}">Abrir ficha →</a>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="4">
+                Todavía no tienes pacientes registrados.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

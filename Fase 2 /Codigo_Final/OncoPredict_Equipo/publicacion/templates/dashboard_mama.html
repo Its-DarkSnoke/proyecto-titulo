@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Panel de mama · OncoPredict</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard_mama.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard_powerbi.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='polish.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='panel_pulmon_pulido.css') }}">
+    <script src="{{ url_for('static', filename='panel_pulmon_interacciones.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='app_navegacion.js') }}" defer></script>
+</head>
+  <body class="panel-mama panel-medico">
+    <aside class="lateral">
+      <a class="marca" href="{{ url_for('inicio') }}"><span class="marca-icono">+</span>OncoPredict<span class="marca-punto">.</span></a>
+      <div class="area">
+        ESPACIO MÉDICO
+      </div>
+      <nav aria-label="Navegación médica">
+        <a class="nav-activo" aria-current="page" href="{{ url_for('especialidad', tipo='mama') }}"><span aria-hidden="true">▦</span> Resumen general</a><a href="#powerbi"><span aria-hidden="true">◫</span> Análisis académico</a><a href="#pacientes"><span aria-hidden="true">♧</span> Mis pacientes</a><a href="{{ url_for('descargar_dashboard_powerbi', tipo='mama') }}"><span aria-hidden="true">⇩</span> Datos para Power BI</a><a href="{{ url_for('clinica.agenda_doctor') }}"><span aria-hidden="true">＋</span> Gestionar agenda</a>
+      </nav>
+      <div class="especialidad">
+        <span class="punto"></span>
+        <div>
+          Oncología de mama<small>Tu especialidad</small>
+        </div>
+      </div>
+      <button class="perfil perfil-logout" type="submit" form="form-cerrar-sesion" title="Cerrar sesión" aria-label="Cerrar sesión de {{ cuenta.nombre }}">
+        <span class="avatar">
+          {{ cuenta.nombre[:1]|upper }}
+        </span>
+        <span class="perfil-identidad">
+          <strong>{{ cuenta.nombre }}</strong><small>Doctor · Mama</small><span class="perfil-accion">Cerrar sesión <span aria-hidden="true">↗</span></span>
+        </span>
+      </button>
+      <form class="salir perfil-salir" id="form-cerrar-sesion" action="{{ url_for('salir') }}" method="post">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <button>Cerrar sesión <span aria-hidden="true">↗</span></button>
+      </form>
+    </aside>
+    <div class="espacio">
+      <header class="barra">
+        <span>Área médica <span class="separador">/</span> <strong>Mama</strong></span><span class="cabecera-etiqueta">Historial de mi atención</span>
+      </header>
+      <main>
+        {% for mensaje in get_flashed_messages() %}
+          <div class="aviso" role="alert">
+            {{ mensaje }}
+          </div>
+        {% endfor %}
+        <section class="encabezado">
+          <div>
+            <p class="sobrelinea">RESUMEN GENERAL</p>
+            <h1>Tu espacio de atención.</h1>
+            <p>Actividad y resultados de tus evaluaciones de mama.</p>
+          </div>
+          <a class="boton" href="{{ url_for('clinica.agenda_doctor') }}"><span aria-hidden="true">＋</span> Gestionar agenda</a>
+        </section>
+        <div class="periodo">
+          <span><span class="punto"></span>Datos del doctor conectado</span><small>Actualizado: {{ resumen.actualizado }}</small>
+        </div>
+        <section class="indicadores" aria-label="Indicadores de todo el historial">
+          <a class="indicador indicador-enlace" href="#pacientes">
+            <span>Pacientes registrados</span><strong>{{ pacientes|length }}</strong><small>Fichas vinculadas a tu atención</small>
+          </a>
+          <a class="indicador indicador-enlace" href="#evaluaciones">
+            <span>Evaluaciones realizadas</span><strong>{{ resumen.totales.total }}</strong><small>{{ resumen.totales.pacientes_evaluados }} pacientes con evaluaciones</small>
+          </a>
+          <a class="indicador indicador-enlace" href="#evaluaciones">
+            <span>Resultados publicados</span><strong>{{ resumen.totales.publicadas }}</strong><small>Visibles para sus pacientes</small>
+          </a>
+          <a class="indicador indicador-enlace pendiente" href="#evaluaciones">
+            <span>Borradores por revisar</span><strong>{{ resumen.totales.borradores }}</strong><small>Sin publicar para el paciente</small>
+          </a>
+        </section>
+        <section class="tarjeta powerbi-entrega" id="powerbi" aria-labelledby="titulo-powerbi-mama">
+          <div>
+            <p class="sobrelinea">DATASET ACADÉMICO</p>
+            <h2 id="titulo-powerbi-mama">Análisis de muestras mamarias</h2>
+            <p>Compara diagnósticos y mediciones morfológicas en 569 muestras académicas.</p>
+          </div>
+          <div class="powerbi-acciones">
+            <a class="boton" href="{{ url_for('dashboard_interactivo', tipo='mama') }}">Abrir dashboard interactivo</a>
+            <a class="boton boton-secundario" href="{{ url_for('descargar_dashboard_powerbi', tipo='mama') }}">Descargar Power BI</a>
+          </div>
+        </section>
+        <section class="graficos" id="evaluaciones">
+          <article class="tarjeta actividad">
+            <div class="titulo-tarjeta">
+              <div>
+                <h2>Actividad de evaluaciones</h2>
+                <p>Últimos 6 meses · incluye el mes actual</p>
+              </div>
+              <span class="etiqueta">{{ resumen.actividad_total }} en el período</span>
+            </div>
+            {% if resumen.actividad_total %}
+              <div class="leyenda">
+                <span><i class="color-publicada"></i>Publicadas</span><span><i class="color-borrador"></i>Borradores</span>
+              </div>
+              <div
+                class="grafico-barras"
+                role="img"
+                aria-label="Evaluaciones por mes. Los valores exactos están en la tabla desplegable siguiente."
+              >
+                {% for mes in resumen.meses %}
+                  <div class="columna">
+                    <span class="valor">{{ mes.total }}</span>
+                    <div class="pista">
+                      <div class="barra-borrador" style="height:{{ mes.altura_borradores }}%">
+                      </div>
+                      <div class="barra-publicada" style="height:{{ mes.altura_publicadas }}%">
+                      </div>
+                    </div>
+                    <span class="mes">{{ mes.etiqueta }}</span>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="vacio-grafico">
+                <span aria-hidden="true">▥</span>
+                <h3>Todavía no hay actividad en este período</h3>
+                <p>Las evaluaciones que guardes aparecerán aquí.</p>
+              </div>
+            {% endif %}
+            <details>
+              <summary>Ver cantidades por mes</summary>
+              <div class="tabla-scroll">
+                <table>
+                  <caption>
+                    Conteo por fecha de evaluación, agrupado en UTC
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th>
+                        Mes
+                      </th>
+                      <th>
+                        Publicadas
+                      </th>
+                      <th>
+                        Borradores
+                      </th>
+                      <th>
+                        Total
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for mes in resumen.meses %}
+                      <tr>
+                        <th scope="row">
+                          {{ mes.etiqueta }}
+                        </th>
+                        <td>
+                          {{ mes.publicadas }}
+                        </td>
+                        <td>
+                          {{ mes.borradores }}
+                        </td>
+                        <td>
+                          {{ mes.total }}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          </article>
+          <article class="tarjeta distribucion">
+            <div class="titulo-tarjeta">
+              <div>
+                <h2>Resultados del modelo</h2>
+                <p>Todo tu historial · incluye borradores</p>
+              </div>
+            </div>
+            {% if resumen.totales.total %}
+              <p class="total-resultados"><strong>{{ resumen.totales.total }}</strong> evaluaciones</p>
+              <div
+                class="barra-distribucion"
+                role="img"
+                aria-label="Distribución de resultados. Cantidades y porcentajes detallados a continuación."
+              >
+                {% for categoria in resumen.categorias %}
+                  {% if categoria.cantidad %}
+                    <span class="segmento {{ categoria.clase }}" style="width:{{ categoria.porcentaje }}%"></span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <ul class="categorias">
+                {% for categoria in resumen.categorias %}
+                  {% if categoria.clase != 'otros' or categoria.cantidad %}
+                    <li>
+                      <span><i class="{{ categoria.clase }}"></i>{{ categoria.etiqueta }}</span><strong>{{ categoria.cantidad }} <small>{{ categoria.porcentaje }}%</small></strong>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            {% else %}
+              <div class="vacio-grafico">
+                <span aria-hidden="true">◷</span>
+                <h3>Sin resultados todavía</h3>
+                <p>Realiza una evaluación desde la ficha de un paciente.</p>
+              </div>
+            {% endif %}
+            <p class="nota">Se cuentan evaluaciones, no personas. Una persona puede tener varios resultados. La clasificación del modelo no equivale a un diagnóstico confirmado.</p>
+          </article>
+        </section>
+        <section class="tarjeta recientes">
+          <div class="titulo-tarjeta">
+            <div>
+              <h2>Últimas evaluaciones</h2>
+              <p>Las cinco más recientes de tu atención</p>
+            </div>
+          </div>
+          <div class="tabla-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>
+                    Paciente
+                  </th>
+                  <th>
+                    Resultado del modelo
+                  </th>
+                  <th>
+                    Estado
+                  </th>
+                  <th>
+                    Fecha (UTC)
+                  </th>
+                  <th>
+                    Acción
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for evaluacion in resumen.recientes %}
+                  <tr>
+                    <td class="nombre">
+                      {{ evaluacion.nombre }}
+                    </td>
+                    <td>
+                      {{ evaluacion.resultado }}
+                    </td>
+                    <td>
+                      <span class="estado {{ 'publicada' if evaluacion.publicada else 'borrador' }}">{{ 'Publicado' if evaluacion.publicada else 'Borrador' }}</span>
+                    </td>
+                    <td>
+                      {{ evaluacion.creada_en.strftime('%d/%m/%Y') }}
+                    </td>
+                    <td>
+                      <a class="enlace" href="{{ url_for('ficha_doctor', paciente_id=evaluacion.paciente_id) }}">Abrir ficha ↗</a>
+                    </td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="5" class="vacio-tabla">
+                      Todavía no has guardado evaluaciones.
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <section class="tarjeta" id="pacientes">
+          <div class="titulo-tarjeta">
+            <div>
+              <h2>Mis pacientes <span class="cantidad">{{ pacientes|length }}</span></h2>
+              <p>Abre una ficha para evaluar o publicar resultados.</p>
+            </div>
+            <label class="buscador" for="buscar">
+              Buscar paciente
+              <input id="buscar" type="search" placeholder="Nombre, RUT o correo" autocomplete="off">
+            </label>
+          </div>
+          <div class="tabla-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>
+                    Paciente
+                  </th>
+                  <th>
+                    RUT
+                  </th>
+                  <th>
+                    Correo
+                  </th>
+                  <th>
+                    Acción
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="lista-pacientes">
+                {% for paciente in pacientes %}
+                  <tr data-paciente>
+                    <td class="nombre" data-label="Paciente">
+                      {{ paciente.nombre }}
+                    </td>
+                    <td data-label="RUT">
+                      {{ paciente.rut }}
+                    </td>
+                    <td data-label="Correo">
+                      {{ paciente.correo }}
+                    </td>
+                    <td data-label="Acción">
+                      <a class="enlace" href="{{ url_for('ficha_doctor', paciente_id=paciente.id) }}">Abrir ficha ↗</a>
+                    </td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="4" class="vacio-tabla">
+                      Los pacientes aparecerán cuando los incorpores desde una atención.
+                    </td>
+                  </tr>
+                {% endfor %}
+                <tr id="sin-coincidencias" hidden>
+                  <td colspan="4" class="vacio-tabla">
+                    No hay pacientes que coincidan con la búsqueda.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p id="resultado-busqueda" class="lectores" aria-live="polite"></p>
+        </section>
+        <footer>
+          OncoPredict · Proyecto académico de apoyo al análisis oncológico.<br>Los gráficos usan la tabla evaluaciones. El historial anterior no se incluye automáticamente.
+        </footer>
+      </main>
+    </div>
+    <script>
+const entrada = document.getElementById('buscar');
+const filas = [...document.querySelectorAll('[data-paciente]')];
+const normalizar = texto => texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+entrada.addEventListener('input', () => {
+  const consulta = normalizar(entrada.value.trim());
+  let visibles = 0;
+  filas.forEach(fila => {fila.hidden = !normalizar([...fila.cells].slice(0,3).map(celda => celda.textContent).join(' ')).includes(consulta); if (!fila.hidden) visibles++;});
+  document.getElementById('sin-coincidencias').hidden = !filas.length || visibles > 0;
+  document.getElementById('resultado-busqueda').textContent = `${visibles} pacientes encontrados`;
+});
+</script>
+  </body>
+</html>

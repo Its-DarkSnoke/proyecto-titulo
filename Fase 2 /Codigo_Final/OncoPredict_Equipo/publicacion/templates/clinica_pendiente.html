@@ -1,0 +1,34 @@
+{% extends 'clinica_base.html' %}
+{% block contenido %}
+  <section class="web-tarjeta comprobante">
+    <span class="etiqueta-especialidad">Reserva #{{ cita.id }}</span>
+    <h1>{{ 'Horario retenido temporalmente' if cita.estado=='pendiente' else 'Estado de tu reserva' }}</h1>
+    <p>Estado: <strong>{{ cita.estado }}</strong></p>
+    <dl>
+      <dt>Profesional</dt>
+      <dd>{{ cita.doctor_nombre }}</dd>
+      <dt>Fecha y hora de Chile</dt>
+      <dd>{{ cita.inicio_local.strftime('%d/%m/%Y · %H:%M') }}</dd>
+      {% if cita.estado=='pendiente' %}
+        <dt>Vencimiento</dt>
+        <dd>{{ cita.vence_local.strftime('%d/%m/%Y · %H:%M') }}</dd>
+      {% endif %}
+    </dl>
+    {% if webpay_habilitado and cita.estado == 'pendiente' %}
+      <p>Completa el pago de prueba antes del vencimiento de la reserva.</p>
+      <form method="post" action="{{ url_for('clinica.webpay_iniciar') }}">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <button class="web-boton">Ir a Webpay de prueba</button>
+      </form>
+    {% elif cita.estado == 'pendiente' %}
+      <p>La reserva está pendiente de pago.</p>
+    {% endif %}
+    {% if cita.estado=='pendiente' %}
+      <form method="post" action="{{ url_for('clinica.cancelar_reserva') }}">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <button class="web-boton secundario">Cancelar esta reserva</button>
+      </form>
+    {% endif %}
+    <p><a class="web-enlace" href="{{ url_for('clinica.agendar') }}">Consultar otros horarios →</a></p>
+  </section>
+{% endblock %}

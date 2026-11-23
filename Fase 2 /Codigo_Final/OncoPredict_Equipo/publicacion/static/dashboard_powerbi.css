@@ -1,0 +1,9 @@
+.powerbi-entrega{display:flex;align-items:center;justify-content:space-between;gap:24px;background:linear-gradient(110deg,#fff 0%,#f3f9f8 100%);border-color:#cfe6e2}
+.powerbi-entrega>div{max-width:670px}
+.powerbi-entrega h2{font-size:18px;font-weight:650;color:#23434d;margin:8px 0}
+.powerbi-entrega p{margin:0}
+.powerbi-entrega .boton{flex-shrink:0}
+.powerbi-acciones{display:flex;flex-wrap:wrap;gap:10px}
+.powerbi-entrega .boton-secundario{color:#096a72;background:#fff;border:1px solid #bcd9d6}
+.powerbi-entrega .boton-secundario:hover{background:#e9f5f3}
+@media(max-width:850px){.powerbi-entrega{align-items:flex-start;flex-direction:column}.powerbi-entrega .boton{white-space:normal;text-align:center}}

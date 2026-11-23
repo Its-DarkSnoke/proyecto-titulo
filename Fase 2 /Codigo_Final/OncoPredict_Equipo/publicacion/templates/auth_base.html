@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{% block titulo %}Acceso · OncoPredict{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='polish.css') }}">
+</head>
+  <body class="{{ 'paciente' if rol is defined and rol == 'paciente' else '' }}">
+    <div class="acceso-layout">
+      <aside class="presentacion">
+        <a href="{{ url_for('inicio') }}" class="marca" aria-label="OncoPredict, inicio"><span class="marca-icono" aria-hidden="true">{% include 'auth_icono.html' %}</span>OncoPredict<span class="marca-punto">.</span></a>
+        <div class="presentacion-contenido">
+          <div class="sobrelinea">
+            <span></span>PLATAFORMA DE APOYO ONCOLÓGICO
+          </div>
+          <h1>La información conecta.<br><em>El cuidado acompaña.</em></h1>
+          <p>Un espacio para el equipo médico y sus pacientes, con la información de cada atención en un solo lugar.</p>
+          <div class="ilustracion" aria-hidden="true">
+            <div class="orbita orbita-uno">
+            </div>
+            <div class="orbita orbita-dos">
+            </div>
+            <div class="orbita orbita-tres">
+            </div>
+            <div class="nucleo">
+              {% include 'auth_icono.html' %}
+            </div>
+            <span class="nodo nodo-uno"></span><span class="nodo nodo-dos"></span><span class="nodo nodo-tres"></span>
+            <div class="tarjeta-flotante">
+              <span class="punto-verde"></span>Atención conectada<span class="linea"></span>
+              <div class="mini-barras">
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pie-panel">
+          <span class="cruz-pequena">+</span><span>Personas al centro de la información.</span>
+        </div>
+      </aside>
+      <div class="contenido-acceso">
+        <header class="cabecera-acceso">
+          <a href="{{ url_for('clinica.portada') }}" style="color:inherit;text-decoration:none">← Portal de la clínica</a><span class="etiqueta-academico">Proyecto académico</span>
+        </header>
+        <main class="zona-formulario">
+          {% block contenido %}
+          {% endblock %}
+        </main>
+        <footer>
+          © OncoPredict · Apoyo al análisis oncológico.
+        </footer>
+      </div>
+    </div>
+    {% block scripts %}
+    {% endblock %}
+  </body>
+</html>

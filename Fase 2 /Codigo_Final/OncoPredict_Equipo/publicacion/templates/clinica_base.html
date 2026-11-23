@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{% block titulo %}{{ clinica_nombre }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='clinica.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='polish.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='clinica_interacciones.css') }}">
+    <script src="{{ url_for('static', filename='clinica_interacciones.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='reserva_borrador.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='app_navegacion.js') }}" defer></script>
+</head>
+  <body>
+    <header class="web-header">
+      <div class="web-header-identidad">
+        <a class="web-marca" href="{{ url_for('clinica.portada') }}"><span>+</span>{{ clinica_nombre }}</a>
+        {% if request.endpoint != 'clinica.portada' %}
+          {% if request.endpoint in ['clinica.reservar', 'clinica.reserva_pendiente'] %}
+            {% set destino_volver = url_for('clinica.agendar') %}
+          {% else %}
+            {% set destino_volver = url_for('clinica.portada') %}
+          {% endif %}
+          <a class="app-back web-volver" data-app-back href="{{ destino_volver }}"><span aria-hidden="true">←</span> Volver</a>
+        {% endif %}
+      </div>
+      <nav aria-label="Navegación principal">
+        <a href="{{ url_for('clinica.portada') }}#especialidades">Especialidades</a><a href="{{ url_for('clinica.agendar') }}">Agenda</a><a href="{{ url_for('inicio') }}">Acceso OncoPredict ↗</a>
+      </nav>
+    </header>
+    <main>
+      {% for mensaje in get_flashed_messages() %}
+        <div class="web-alerta" role="alert">
+          {{ mensaje }}
+        </div>
+      {% endfor %}
+      {% block contenido %}
+      {% endblock %}
+    </main>
+    <footer class="web-footer">
+      <strong>{{ clinica_nombre }}</strong><span>Proyecto académico · Agenda y atención oncológica</span><a href="{{ url_for('login',rol='doctor') }}">Acceso médico</a>
+    </footer>
+  </body>
+</html>

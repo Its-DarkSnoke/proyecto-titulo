@@ -1,0 +1,22 @@
+{% set error_medico = session.get('rol') == 'doctor' and request.path.startswith('/doctor/') %}
+{% extends 'base_v3.html' if error_medico else 'clinica_base.html' %}
+
+{% block titulo %}{{ 'Mi agenda' if error_medico else 'Revisa tu reserva' }} · {{ clinica_nombre }}{% endblock %}
+
+{% block contenido %}
+  {% if error_medico %}
+    <section class="tarjeta">
+      <p class="etiqueta">MI AGENDA</p>
+      <h1>No pudimos completar esta acción</h1>
+      <p role="alert">{{ mensaje }}</p>
+      <a class="boton" href="{{ url_for('clinica.agenda_doctor', fecha=request.form.get('fecha') or none) }}">Volver a Mi agenda →</a>
+    </section>
+  {% else %}
+    <section class="web-tarjeta comprobante">
+      <p class="web-eyebrow">RESERVA DE CONSULTA · {{ codigo }}</p>
+      <h1>No pudimos completar este paso</h1>
+      <p role="alert">{{ mensaje }}</p>
+      <a class="web-boton" href="{{ url_for('clinica.agendar') }}">Volver a los horarios →</a>
+    </section>
+  {% endif %}
+{% endblock %}

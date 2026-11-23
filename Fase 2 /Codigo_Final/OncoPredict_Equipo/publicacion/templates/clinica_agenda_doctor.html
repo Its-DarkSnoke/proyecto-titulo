@@ -1,0 +1,186 @@
+{% extends 'base_v3.html' %}
+{% block titulo %}
+  Mi agenda clínica · OncoPredict
+{% endblock %}
+{% block contenido %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='clinica.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='agenda_doctor.css') }}">
+  <div class="web-agenda agenda-doctor">
+    <div class="cabecera agenda-hero">
+      <div>
+        <p class="etiqueta">ATENCIÓN CLÍNICA</p>
+        <h1>Mi agenda</h1>
+        <p>Turnos de 30 minutos · Hora de Chile (America/Santiago).</p>
+      </div>
+    </div>
+    <nav class="agenda-anclas" aria-label="Secciones de mi agenda">
+      <a href="#habilitar-horarios">Habilitar horarios</a>
+      <a href="#citas-dia">Citas del día</a>
+      <a href="#turnos-dia">Turnos disponibles</a>
+    </nav>
+    <section class="agenda-resumen" aria-label="Resumen de la agenda para esta fecha">
+      <article class="agenda-resumen-item">
+        <span class="agenda-resumen-icono" aria-hidden="true">▦</span>
+        <div><small>Citas del día</small><strong>{{ citas|length }}</strong><span>Para el {{ fecha.strftime('%d/%m/%Y') }}</span></div>
+      </article>
+      <article class="agenda-resumen-item agenda-resumen-pendientes">
+        <span class="agenda-resumen-icono" aria-hidden="true">◷</span>
+        <div><small>Por confirmar</small><strong>{{ citas|selectattr('estado', 'equalto', 'pendiente')|list|length }}</strong><span>Pendientes de pago</span></div>
+      </article>
+      <article class="agenda-resumen-item agenda-resumen-libres">
+        <span class="agenda-resumen-icono" aria-hidden="true">✓</span>
+        <div><small>Turnos disponibles</small><strong>{{ turnos|selectattr('habilitada')|rejectattr('ocupado')|rejectattr('pasado')|list|length }}</strong><span>Habilitados para reservar</span></div>
+      </article>
+    </section>
+    <section class="tarjeta agenda-tarjeta" id="habilitar-horarios" aria-labelledby="titulo-horarios">
+      <div class="agenda-seccion-titulo">
+        <span class="agenda-icono" aria-hidden="true">◷</span>
+        <div>
+          <p class="agenda-eyebrow">DISPONIBILIDAD</p>
+          <h2 id="titulo-horarios">Habilitar horarios</h2>
+        </div>
+      </div>
+      <p>Crea bloques para una fecha futura. Los turnos ya existentes no se duplican ni se reactivan.</p>
+      <form method="post" class="filtros">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <label>
+          Fecha
+          <input type="date" name="fecha" min="{{ hoy.isoformat() }}" required value="{{ fecha.isoformat() }}">
+        </label>
+        <label>
+          Desde
+          <input type="time" name="desde" step="1800" required value="09:00">
+        </label>
+        <label>
+          Hasta
+          <input type="time" name="hasta" step="1800" required value="12:00">
+        </label>
+        <button class="web-boton">Crear turnos</button>
+      </form>
+    </section>
+    <section class="tarjeta agenda-tarjeta" id="citas-dia" aria-labelledby="titulo-citas-dia">
+      <div class="cabecera">
+        <div class="agenda-seccion-titulo">
+          <span class="agenda-icono" aria-hidden="true">▦</span>
+          <div>
+            <p class="agenda-eyebrow">SEGUIMIENTO</p>
+            <h2 id="titulo-citas-dia">Citas del día</h2>
+          </div>
+        </div>
+        <form method="get" class="selector-fecha">
+          <label>
+            Fecha
+            <input type="date" name="fecha" value="{{ fecha.isoformat() }}" required>
+          </label>
+          <button class="web-boton secundario">Consultar</button>
+        </form>
+      </div>
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                Hora
+              </th>
+              <th>
+                Paciente
+              </th>
+              <th>
+                Motivo
+              </th>
+              <th>
+                Estado
+              </th>
+              <th>
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cita in citas %}
+              <tr class="cita-agenda">
+                <td data-label="Hora">
+                  {{ cita.inicio_local.strftime('%H:%M') }}
+                </td>
+                <td data-label="Paciente">
+                  {{ cita.nombre }}<br><small>{{ cita.rut }}<br>{{ cita.correo }}</small>
+                </td>
+                <td data-label="Motivo">
+                  {{ cita.motivo }}
+                </td>
+                <td data-label="Estado">
+                  <span class="estado-agenda {{ cita.estado }}">{{ cita.estado }}</span>
+                  {% if cita.pago_aprobado %}<small class="pago-aprobado">Pago aprobado</small>{% endif %}
+                </td>
+                <td data-label="Acciones">
+                  {% if cita.estado=='confirmada' %}
+                    <form method="post" action="{{ url_for('clinica.estado_cita',cita_id=cita.id) }}">
+                      <input type="hidden" name="csrf" value="{{ csrf }}">
+                      <input type="hidden" name="fecha" value="{{ fecha.isoformat() }}">
+                      <button class="secundario" name="estado" value="realizada">Marcar realizada</button><button class="secundario" name="estado" value="no_asistio">No asistió</button>
+                    </form>
+                  {% endif %}
+                  {% if cita.estado in ('confirmada','realizada') and cita.pago_aprobado %}
+                    <details>
+                      <summary>Incorporar a OncoPredict</summary>
+                      <form method="post" action="{{ url_for('clinica.incorporar',cita_id=cita.id) }}">
+                        <input type="hidden" name="csrf" value="{{ csrf }}">
+                        {% if not cita.tiene_acceso %}
+                          <label>
+                            Contraseña de acceso
+                            <input type="password" name="password" minlength="12" required autocomplete="new-password">
+                          </label>
+                        {% else %}
+                          <p>Su contraseña actual se conservará.</p>
+                        {% endif %}
+                        <button class="web-boton">{{ 'Crear cuenta y vincular' if not cita.tiene_acceso else 'Vincular paciente' }}</button>
+                      </form>
+                    </details>
+                  {% elif cita.estado=='pendiente' %}
+                    <span class="texto-pequeno">Pendiente de pago. No habilita OncoPredict.</span>
+                  {% elif cita.estado in ('confirmada','realizada') and not cita.pago_aprobado %}
+                    <span class="texto-pequeno">Pago aún sin verificar. No habilita OncoPredict.</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr class="cita-vacia">
+                <td colspan="5">
+                  No hay citas para esta fecha.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="tarjeta agenda-tarjeta" id="turnos-dia" aria-labelledby="titulo-turnos-dia">
+      <div class="agenda-seccion-titulo">
+        <span class="agenda-icono" aria-hidden="true">◫</span>
+        <div>
+          <p class="agenda-eyebrow">ORGANIZACIÓN</p>
+          <h2 id="titulo-turnos-dia">Turnos del {{ fecha.strftime('%d/%m/%Y') }}</h2>
+        </div>
+      </div>
+      <div class="turnos-doctor">
+        {% for turno in turnos %}
+          <div class="turno-doctor {{ 'turno-ocupado' if turno.ocupado else ('turno-finalizado' if turno.pasado else ('turno-habilitado' if turno.habilitada else 'turno-deshabilitado')) }}">
+            <strong>{{ turno.inicio_local.strftime('%H:%M') }}</strong><span>{{ 'Ocupado' if turno.ocupado else ('Finalizado' if turno.pasado else ('Habilitado' if turno.habilitada else 'Deshabilitado')) }}</span>
+            {% if not turno.ocupado and not turno.pasado %}
+              <form method="post" action="{{ url_for('clinica.alternar_turno',turno_id=turno.id) }}">
+                <input type="hidden" name="csrf" value="{{ csrf }}">
+                <input type="hidden" name="fecha" value="{{ fecha.isoformat() }}">
+                <button class="secundario">{{ 'Deshabilitar' if turno.habilitada else 'Habilitar' }}</button>
+              </form>
+            {% endif %}
+          </div>
+        {% else %}
+          <p>Sin horarios creados para este día.</p>
+        {% endfor %}
+      </div>
+    </section>
+    <div class="web-alerta">
+      Las citas se confirman al verificar un pago de prueba aprobado. Desde una cita confirmada con pago aprobado puedes crear el acceso a OncoPredict.
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'clinica_base.html' %}
+{% block contenido %}
+  {% if reserva_retomable %}
+    <aside class="reserva-retomar" aria-label="Reserva pendiente">
+      <div><strong>Tu reserva sigue pendiente</strong><span>La hora se mantiene retenida. Puedes volver al pago mientras siga vigente.</span></div>
+      <a class="web-boton" href="{{ url_for('clinica.reserva_pendiente') }}">Retomar reserva →</a>
+    </aside>
+  {% endif %}
+  <section class="hero">
+    <div>
+      <p class="web-eyebrow">TU ATENCIÓN, PASO A PASO</p>
+      <h1>El primer paso<br>es encontrar<br><em>tu espacio de atención.</em></h1>
+      <p class="hero-descripcion">Consulta los horarios disponibles de nuestros profesionales y comienza tu reserva, sin necesidad de una cuenta de OncoPredict.</p>
+      <a class="web-boton" href="{{ url_for('clinica.agendar') }}">Consultar disponibilidad <span>→</span></a>
+      <p class="hero-nota">Consultas de 30 minutos · Horario de Chile continental</p>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="anillo">
+      </div>
+      <div class="anillo segundo">
+      </div>
+      <span class="cruz-hero">+</span>
+      <div class="tarjeta-hero">
+        <span class="web-eyebrow">UNA ATENCIÓN CONECTADA</span><strong>Agenda. Consulta.<br>Continúa tu cuidado.</strong><span class="linea-hero"></span><small>Clínica + programa OncoPredict</small>
+      </div>
+    </div>
+  </section>
+  <section class="seccion" id="especialidades">
+    <p class="web-eyebrow">ESPECIALIDADES</p>
+    <h2>Encuentra al profesional de tu atención.</h2>
+    <div class="web-columnas">
+      <article class="web-tarjeta">
+        <span class="numero">01</span>
+        <h3>Oncología de mama</h3>
+        <p>Consulta los horarios de los doctores de esta especialidad. Durante la atención, el profesional podrá evaluar tu incorporación a OncoPredict.</p>
+        <a class="web-enlace" href="{{ url_for('clinica.agendar') }}">Ver profesionales y horarios ↗</a>
+      </article>
+      <article class="web-tarjeta">
+        <span class="numero">02</span>
+        <h3>Oncología de pulmón</h3>
+        <p>Reserva un espacio de consulta y seguimiento con un doctor de la especialidad. El módulo predictivo de pulmón aún no está integrado.</p>
+        <a class="web-enlace" href="{{ url_for('clinica.agendar') }}">Ver profesionales y horarios ↗</a>
+      </article>
+    </div>
+  </section>
+  <section class="seccion pasos">
+    <div>
+      <p class="web-eyebrow">CÓMO FUNCIONA</p>
+      <h2>De tu reserva<br>a tu atención.</h2>
+    </div>
+    <ol>
+      <li>
+        <details open>
+          <summary><strong>Elige un horario</strong></summary>
+          <p>Selecciona un doctor y un turno disponible.</p>
+        </details>
+      </li>
+      <li>
+        <details open>
+          <summary><strong>Completa tu reserva</strong></summary>
+          <p>Ingresa tus datos de contacto. La reserva se retiene temporalmente.</p>
+        </details>
+      </li>
+      <li>
+        <details open>
+          <summary><strong>Continúa con tu doctor</strong></summary>
+          <p>La cita se confirma con el pago. El acceso a OncoPredict se habilita durante la atención, si corresponde.</p>
+        </details>
+      </li>
+    </ol>
+  </section>
+  <div class="web-alerta">
+    {% if webpay_habilitado %}
+      Agenda con Webpay en ambiente de pruebas. Usa las tarjetas de integración para probar la confirmación de citas.
+    {% else %}
+      Las reservas quedan pendientes mientras se habilita el pago de prueba.
+    {% endif %}
+  </div>
+{% endblock %}

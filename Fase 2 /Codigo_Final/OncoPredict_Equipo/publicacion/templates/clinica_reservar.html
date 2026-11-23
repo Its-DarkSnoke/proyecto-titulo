@@ -1,0 +1,79 @@
+{% extends 'clinica_base.html' %}
+{% block titulo %}
+  Reservar · {{ clinica_nombre }}
+{% endblock %}
+{% block contenido %}
+  <a class="web-enlace" href="{{ url_for('clinica.agendar') }}">← Volver a los horarios</a>
+  <section class="web-titulo">
+    <p class="web-eyebrow">DATOS DE LA RESERVA</p>
+    <h1>Un paso más para tu consulta.</h1>
+    <p>No se creará una cuenta de OncoPredict ni se te pedirá una contraseña.</p>
+  </section>
+  <div class="reserva-layout">
+    <section class="web-tarjeta">
+      <h2>Datos del paciente</h2>
+      <form method="post" data-borrador-reserva>
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <div class="campos-reserva">
+          <label>
+            RUT
+            <input name="rut" required maxlength="12" placeholder="12345678-5" value="{{ request.form.get('rut','') }}">
+          </label>
+          <label>
+            Edad
+            <input name="edad" type="number" min="0" max="120" required value="{{ request.form.get('edad','') }}">
+          </label>
+        </div>
+        <label>
+          Nombre completo
+          <input
+            name="nombre"
+            minlength="3"
+            maxlength="100"
+            required
+            autocomplete="name"
+            value="{{ request.form.get('nombre','') }}"
+          >
+        </label>
+        <label>
+          Correo electrónico
+          <input
+            name="correo"
+            type="email"
+            maxlength="254"
+            required
+            autocomplete="email"
+            value="{{ request.form.get('correo','') }}"
+          >
+        </label>
+        <label>
+          Motivo de consulta<textarea name="motivo" minlength="3" maxlength="500" required placeholder="Describe brevemente el motivo de tu consulta.">{{ request.form.get('motivo','') }}</textarea>
+        </label>
+        <p class="texto-pequeno">Si ya tienes una ficha, usa su mismo RUT y correo. Los datos existentes no se modificarán desde este formulario.</p>
+        <p class="texto-pequeno">Si sales accidentalmente, recuperaremos estos datos mientras mantengas abierta esta pestaña.</p>
+        <button class="web-boton ancho">Retener horario por 15 minutos →</button>
+      </form>
+    </section>
+    <aside class="web-tarjeta resumen-reserva">
+      <span class="web-eyebrow">TU SELECCIÓN</span>
+      <h2>{{ horario.doctor_nombre }}</h2>
+      <p>{{ 'Oncología de mama' if horario.especializacion=='mama' else 'Oncología de pulmón' }}</p>
+      <dl>
+        <dt>Fecha</dt>
+        <dd>{{ horario.inicio_local.strftime('%d/%m/%Y') }}</dd>
+        <dt>Hora de Chile</dt>
+        <dd>{{ horario.inicio_local.strftime('%H:%M') }}</dd>
+        <dt>Duración</dt>
+        <dd>30 minutos</dd>
+      </dl>
+      <div class="web-alerta">
+        El horario se retiene durante 15 minutos.
+        {% if webpay_habilitado %}
+          Completa el pago de prueba dentro de ese plazo.
+        {% else %}
+          La reserva queda pendiente de pago.
+        {% endif %}
+      </div>
+    </aside>
+  </div>
+{% endblock %}

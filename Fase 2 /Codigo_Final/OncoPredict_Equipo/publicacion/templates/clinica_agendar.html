@@ -1,0 +1,53 @@
+{% extends 'clinica_base.html' %}
+{% block titulo %}
+  Agendar · {{ clinica_nombre }}
+{% endblock %}
+{% block contenido %}
+  {% if reserva_retomable %}
+    <aside class="reserva-retomar" aria-label="Reserva pendiente">
+      <div><strong>Tu reserva sigue pendiente</strong><span>La hora se mantiene retenida. Puedes volver al pago mientras siga vigente.</span></div>
+      <a class="web-boton" href="{{ url_for('clinica.reserva_pendiente') }}">Retomar reserva →</a>
+    </aside>
+  {% endif %}
+  <section class="web-titulo">
+    <p class="web-eyebrow">AGENDA DE CONSULTAS</p>
+    <h1>Encuentra tu próximo horario.</h1>
+    <p>Turnos de 30 minutos. Todas las fechas y horas corresponden a America/Santiago.</p>
+  </section>
+  <form class="filtros" method="get">
+    <label>
+      Fecha
+      <input type="date" name="fecha" value="{{ fecha.isoformat() }}" min="{{ hoy.isoformat() }}" required>
+    </label>
+    <label>
+      Profesional
+      <select name="doctor">
+        <option value="">Todos los profesionales</option>
+        {% for doctor in doctores %}
+          <option value="{{ doctor.id }}" {{ 'selected' if doctor_id==doctor.id else '' }}>{{ doctor.nombre }} · {{ 'Mama' if doctor.especializacion=='mama' else 'Pulmón' }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button class="web-boton">Buscar horarios</button>
+  </form>
+  <div class="resultados-cabecera">
+    <h2>Horarios del {{ fecha.strftime('%d/%m/%Y') }}</h2>
+    <span>{{ horarios|length }} disponibles</span>
+  </div>
+  <div class="web-horarios">
+    {% for horario in horarios %}
+      <article class="web-tarjeta horario">
+        <span class="etiqueta-especialidad">{{ 'Oncología de mama' if horario.especializacion=='mama' else 'Oncología de pulmón' }}</span>
+        <h3>{{ horario.nombre }}</h3>
+        <p class="hora">{{ horario.inicio_local.strftime('%H:%M') }} <span>— {{ horario.fin_local.strftime('%H:%M') }}</span></p>
+        <p>Consulta de 30 minutos</p>
+        <a class="web-boton secundario" href="{{ url_for('clinica.reservar',horario_id=horario.id) }}">Seleccionar horario →</a>
+      </article>
+    {% else %}
+      <div class="web-vacio">
+        <h3>No hay turnos disponibles para esta selección.</h3>
+        <p>Prueba otra fecha o profesional. Los horarios aparecen cuando el doctor habilita su agenda.</p>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

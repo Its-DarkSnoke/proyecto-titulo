@@ -1,0 +1,14 @@
+.panel-pulmon .modelo{scroll-margin-top:20px}
+.panel-pulmon .modelo-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.8fr);gap:28px}
+.panel-pulmon .modelo h3{font-size:12px;color:#31535d;margin:0 0 14px}
+.panel-pulmon .variables-modelo{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.panel-pulmon .variables-modelo li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:14px;border-bottom:1px solid #edf1f3;padding:0 0 10px;font-size:11px;line-height:1.6}
+.panel-pulmon .variables-modelo strong{color:#2d525c;font-weight:600}
+.panel-pulmon .variables-modelo span{color:#697f89}
+.panel-pulmon .modelo-rendimiento{background:#f6faf9;border:1px solid #e3eeeb;border-radius:10px;padding:20px}
+.panel-pulmon .modelo-rendimiento dl{margin:0}
+.panel-pulmon .modelo-rendimiento dl div{display:flex;justify-content:space-between;gap:15px;padding:10px 0;border-bottom:1px solid #e4ece9}
+.panel-pulmon .modelo-rendimiento dt{font-size:10px;color:#667e87}
+.panel-pulmon .modelo-rendimiento dd{margin:0;font-size:11px;font-weight:600;color:#28505a;white-space:nowrap}
+.panel-pulmon .modelo-rendimiento p{font-size:10px;margin:15px 0 0}
+@media(max-width:760px){.panel-pulmon .modelo-grid{grid-template-columns:1fr;gap:22px}.panel-pulmon .variables-modelo li{grid-template-columns:1fr;gap:2px}}

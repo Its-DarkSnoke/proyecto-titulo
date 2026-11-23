@@ -1,0 +1,14 @@
+{% extends 'auth_base.html' %}
+{% block contenido %}
+  <section class="formulario selector" aria-labelledby="titulo-acceso">
+    <span class="eyebrow">BIENVENIDO A ONCOPREDICT</span>
+    <h2 id="titulo-acceso">Tu espacio de atención.</h2>
+    <p class="descripcion">Selecciona cómo deseas ingresar a la plataforma.</p>
+    <a class="opcion" href="{{ url_for('login', rol='doctor') }}"><span class="opcion-icono"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3v5a4 4 0 0 0 8 0V3M4 3h4m4 0h4M10 12v3a5 5 0 0 0 10 0v-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="20" cy="10" r="2" stroke="currentColor" stroke-width="1.6"/></svg></span><span class="opcion-texto"><strong>Soy doctor</strong><span>Pacientes y evaluaciones de mi especialidad</span></span><span class="flecha" aria-hidden="true">↗</span></a>
+  <a class="opcion opcion-paciente" href="{{ url_for('login', rol='paciente') }}"><span class="opcion-icono"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M5 21v-2a7 7 0 0 1 14 0v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="opcion-texto"><strong>Soy paciente</strong><span>Mi ficha y resultados publicados</span></span><span class="flecha" aria-hidden="true">↗</span></a>
+    <div class="nota-acceso">
+      <span aria-hidden="true">ⓘ</span>
+      <p>El acceso es personal. Si todavía no tienes una cuenta, contacta a tu doctor o al administrador.</p>
+    </div>
+  </section>
+{% endblock %}

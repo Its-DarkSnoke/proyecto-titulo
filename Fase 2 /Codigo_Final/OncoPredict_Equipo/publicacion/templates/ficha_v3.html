@@ -1,0 +1,164 @@
+{% extends 'base_v3.html' %}
+{% block contenido %}
+  <style>
+    .formulario-pulmon select{display:block;width:100%;min-height:46px;margin-top:8px;padding:12px;border:1px solid #d6dfeb;border-radius:9px;background:#f8fafc;color:#203049;font:inherit}
+    .formulario-pulmon select:focus-visible{outline:2px solid #8ab2ff;outline-offset:2px}
+  </style>
+  <div class="ficha-layout {{ 'ficha-medica' if medico else 'ficha-paciente' }}">
+  {% if medico %}
+    <a class="enlace volver-fichas app-back" data-app-back href="{{ url_for('panel_doctor') }}">← Mis pacientes</a>
+  {% endif %}
+  <div class="cabecera ficha-cabecera">
+    <div class="ficha-identidad">
+      <span class="avatar-ficha" aria-hidden="true">{{ paciente.nombre[:1]|upper }}</span>
+      <div>
+        <p class="etiqueta">{{ 'FICHA DEL PACIENTE' if medico else 'MI ESPACIO' }}</p>
+        <h1>{{ paciente.nombre }}</h1>
+        <p>RUT: {{ paciente.rut }} · Edad: {{ paciente.edad }} · {{ paciente.correo }}</p>
+      </div>
+    </div>
+    {% if medico and tipo == 'pulmon' %}
+      <a class="boton" href="{{ url_for('descargar_informe_pulmon', paciente_id=paciente.id) }}">Descargar ficha PDF</a>
+    {% endif %}
+  </div>
+  {% if not medico %}
+    <section class="resumen-paciente" aria-label="Resumen de mi espacio">
+      <article class="resumen-paciente-card">
+        <span class="resumen-icono" aria-hidden="true">◷</span>
+        <div><small>Resultados publicados</small><strong>{{ evaluaciones|length }}</strong><span>Disponibles en tu espacio</span></div>
+      </article>
+      <a class="resumen-paciente-card resumen-agenda" href="{{ url_for('clinica.agendar') }}">
+        <span class="resumen-icono" aria-hidden="true">＋</span>
+        <div><small>¿Necesitas una consulta?</small><strong>Consultar agenda</strong><span>Revisa profesionales y horarios disponibles</span></div>
+        <span class="flecha-paciente" aria-hidden="true">↗</span>
+      </a>
+    </section>
+  {% endif %}
+  {% if medico and tipo == 'mama' %}
+    <section class="tarjeta">
+      <h2>Nueva evaluación de mama</h2>
+      <p>Ingresa las variables del modelo existente. El resultado se guardará como borrador.</p>
+      <form method="post" data-feedback-carga>
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <div class="campos">
+          {% for campo,etiqueta in [('radio_medio','Radio medio'),('textura_media','Textura media'),('perimetro_medio','Perímetro medio'),('area_media','Área media')] %}
+            <label>
+              {{ etiqueta }}
+              <input name="{{ campo }}" inputmode="decimal" required value="{{ request.form.get(campo,'') }}">
+            </label>
+          {% endfor %}
+        </div>
+        <button class="boton">Evaluar y guardar borrador</button>
+      </form>
+    </section>
+  {% elif medico and tipo == 'pulmon' %}
+    <section class="tarjeta">
+      <h2>Nueva evaluación de pulmón</h2>
+      <p>Registra los factores del paciente. Su edad registrada ({{ paciente.edad }} años) se incorpora automáticamente.</p>
+      <div class="aviso">El modelo es un prototipo académico de apoyo. La señal requiere interpretación del doctor y no confirma ni descarta cáncer.</div>
+      <form method="post" class="formulario-pulmon" data-feedback-carga>
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <div class="campos">
+          {% for campo,etiqueta,opciones in [
+            ('Gender','Género',[('Female','Mujer'),('Male','Hombre')]),
+            ('Smoker','¿Fuma?',[('No','No'),('Yes','Sí')]),
+            ('Passive_Smoker','Exposición al humo ajeno',[('No','No'),('Yes','Sí')]),
+            ('Family_History','Antecedentes familiares',[('No','No'),('Yes','Sí')]),
+            ('Air_Pollution_Exposure','Exposición a contaminación del aire',[('Low','Baja'),('Medium','Media'),('High','Alta')]),
+            ('Occupational_Exposure','Exposición ocupacional',[('No','No'),('Yes','Sí')]),
+            ('Indoor_Pollution','Contaminación en interiores',[('No','No'),('Yes','Sí')]),
+            ('Healthcare_Access','Acceso a atención de salud',[('Poor','Limitado'),('Good','Bueno')])
+          ] %}
+            <label>{{ etiqueta }}
+              <select name="{{ campo }}" required>
+                <option value="">Seleccionar</option>
+                {% for valor,texto in opciones %}
+                  <option value="{{ valor }}" {{ 'selected' if request.form.get(campo) == valor else '' }}>{{ texto }}</option>
+                {% endfor %}
+              </select>
+            </label>
+          {% endfor %}
+          <label>Años fumando
+            <input type="number" name="Years_of_Smoking" min="0" max="80" required value="{{ request.form.get('Years_of_Smoking','0') }}">
+          </label>
+          <label>Cigarrillos por día
+            <input type="number" name="Cigarettes_per_Day" min="0" max="100" required value="{{ request.form.get('Cigarettes_per_Day','0') }}">
+          </label>
+        </div>
+        <button class="boton">Evaluar y guardar borrador</button>
+      </form>
+    </section>
+  {% endif %}
+  <section class="tarjeta tarjeta-resultados" aria-labelledby="titulo-resultados">
+    <div class="titulo-resultados">
+      <div>
+        <p class="etiqueta">{{ 'SEGUIMIENTO CLÍNICO' if medico else 'TU INFORMACIÓN' }}</p>
+        <h2 id="titulo-resultados">{{ 'Evaluaciones de mi atención' if medico else 'Mis resultados publicados' }}</h2>
+        <p>{{ 'Revisa el historial de evaluaciones guardadas para esta ficha.' if medico else 'Aquí encontrarás los resultados que tu doctor publique para ti.' }}</p>
+      </div>
+      {% if not medico %}<span class="contador-resultados">{{ evaluaciones|length }} {{ 'resultado' if evaluaciones|length == 1 else 'resultados' }}</span>{% endif %}
+    </div>
+    {% if not medico %}
+      <p class="contexto-clinico"><span aria-hidden="true">ⓘ</span> La información publicada debe revisarse con tu profesional tratante y no reemplaza una consulta médica.</p>
+    {% endif %}
+    {% for evaluacion in evaluaciones %}
+      <article class="evaluacion" data-tipo-evaluacion="{{ evaluacion.tipo }}">
+        <div class="cabecera">
+          <span class="insignia {{ 'verde' if evaluacion.publicada else '' }}">{{ 'Publicado' if evaluacion.publicada else 'Borrador privado' }} · {{ 'Mama' if evaluacion.tipo == 'mama' else 'Pulmón' }}</span><time>{{ evaluacion.creada_en.strftime('%d/%m/%Y %H:%M') }}</time>
+        </div>
+        <h3>Resultado del modelo: {{ evaluacion.resultado }}</h3>
+        {% if evaluacion.tipo == 'pulmon' %}
+          {% if 'puntaje_modelo' in evaluacion.datos %}
+            <p>Puntaje técnico: {{ '%.3f'|format(evaluacion.datos.puntaje_modelo) }} · Umbral aplicado: {{ '%.3f'|format(evaluacion.datos.umbral_modelo) }}</p>
+          {% endif %}
+          <p>Señal experimental de apoyo; no es una probabilidad clínica ni un diagnóstico.</p>
+        {% endif %}
+        {% if not medico %}
+          <p>Publicado por: {{ evaluacion.doctor_nombre }}</p>
+        {% endif %}
+        <details class="detalle-evaluacion" {{ 'open' if medico or (not medico and evaluacion.tipo == 'mama') else '' }}>
+        <summary>Ver datos de esta evaluación</summary>
+        <dl class="campos {{ 'mediciones-paciente' if not medico and evaluacion.tipo == 'mama' else '' }}">
+          {% for campo,etiqueta in [('radio_medio','Radio medio'),('textura_media','Textura media'),('perimetro_medio','Perímetro medio'),('area_media','Área media')] %}
+            {% if campo in evaluacion.datos %}
+              <div>
+                <dt>{{ etiqueta }}</dt>
+                <dd>{{ evaluacion.datos[campo] }}</dd>
+              </div>
+            {% endif %}
+          {% endfor %}
+          {% if evaluacion.tipo == 'pulmon' %}
+            {% for campo,etiqueta in [('Age','Edad'),('Gender','Género'),('Smoker','Fumador'),('Years_of_Smoking','Años fumando'),('Cigarettes_per_Day','Cigarrillos por día'),('Passive_Smoker','Exposición pasiva'),('Family_History','Antecedentes familiares'),('Air_Pollution_Exposure','Contaminación del aire'),('Occupational_Exposure','Exposición ocupacional'),('Indoor_Pollution','Contaminación interior'),('Healthcare_Access','Acceso a salud')] %}
+              {% if campo in evaluacion.datos %}
+                <div><dt>{{ etiqueta }}</dt><dd>{{ {'Female':'Mujer','Male':'Hombre','Yes':'Sí','No':'No','Low':'Baja','Medium':'Media','High':'Alta','Poor':'Limitado','Good':'Bueno'}.get(evaluacion.datos[campo], evaluacion.datos[campo]) }}</dd></div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </dl>
+        </details>
+        {% if medico and not evaluacion.publicada %}
+          <form method="post" action="{{ url_for('publicar', evaluacion_id=evaluacion.id) }}" data-confirmar-publicacion data-feedback-carga>
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <button class="boton">Publicar para el paciente</button>
+          </form>
+        {% endif %}
+      </article>
+    {% else %}
+      {% if medico %}
+        <p class="estado-sin-resultados">Aún no has registrado evaluaciones para este paciente.</p>
+      {% else %}
+        <div class="estado-sin-resultados estado-vacio-paciente">
+          <span class="vacio-icono" aria-hidden="true">✦</span>
+          <div>
+            <h3>Tu espacio está listo</h3>
+            <p>Tu doctor todavía no ha publicado resultados para ti.</p>
+            <p>Cuando se publique un resultado, aparecerá aquí para que puedas consultarlo.</p>
+            <a class="boton boton-agenda-paciente" href="{{ url_for('clinica.agendar') }}">Consultar horarios disponibles <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </section>
+  </div>
+  {% if not medico %}<script src="{{ url_for('static', filename='paciente_mediciones.js') }}" defer></script>{% endif %}
+{% endblock %}

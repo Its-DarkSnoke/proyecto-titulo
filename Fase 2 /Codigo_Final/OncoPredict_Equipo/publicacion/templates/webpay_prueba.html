@@ -1,0 +1,32 @@
+{% extends 'clinica_base.html' %}
+{% block titulo %}
+  Webpay de prueba · {{ clinica_nombre }}
+{% endblock %}
+{% block contenido %}
+  {% if reserva_completada %}
+    <script>try{sessionStorage.removeItem('onco_clinica_reserva_borrador')}catch(_){}</script>
+  {% endif %}
+  <section class="web-tarjeta comprobante">
+    <p class="web-eyebrow">WEBPAY · AMBIENTE DE PRUEBAS</p>
+    {% if mensaje %}
+      <h1>Resultado del pago</h1>
+      <p role="status">{{ mensaje }}</p>
+      {% if orden %}
+        <dl>
+          <dt>Orden de compra</dt>
+          <dd>{{ orden }}</dd>
+          <dt>Monto de prueba</dt>
+          <dd>${{ monto }} CLP</dd>
+        </dl>
+      {% endif %}
+      <a class="web-enlace" href="{{ url_for('clinica.reserva_pendiente') }}">Volver a la reserva →</a>
+    {% else %}
+      <h1>Pagar la consulta</h1>
+      <p>Monto de prueba <strong>${{ pago.monto }} CLP</strong></p>
+      <form method="post" action="{{ formulario }}">
+        <input type="hidden" name="token_ws" value="{{ pago.referencia_proveedor }}">
+        <button class="web-boton">Continuar a Webpay →</button>
+      </form>
+    {% endif %}
+  </section>
+{% endblock %}

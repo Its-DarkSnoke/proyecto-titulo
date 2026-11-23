@@ -1,0 +1,335 @@
+body.panel-medico {
+  --panel-ink: #173d4b;
+  --panel-muted: #627d88;
+  --panel-line: #dce9e9;
+  background:
+    radial-gradient(ellipse at 75% 0, rgba(194,233,222,.35), transparent 34rem),
+    #f4f8f7;
+  color: var(--panel-ink);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+body.panel-medico .lateral {
+  background: rgba(255,255,255,.94);
+  border-color: #e2ecec;
+  box-shadow: 8px 0 28px rgba(24,57,70,.045);
+  backdrop-filter: blur(16px);
+}
+body.panel-medico .marca { color: #143f48; font-size: 22px; }
+body.panel-medico .marca-icono {
+  color: #fff;
+  background: linear-gradient(145deg,#14968c,#08737b);
+  box-shadow: 0 6px 14px rgba(8,124,131,.19);
+}
+body.panel-medico .area { margin-top: 40px; color: #82959c; }
+body.panel-medico .lateral nav { gap: 7px; }
+body.panel-medico .lateral nav a {
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: #5b7480;
+  font-size: 12px;
+  transition: color .18s ease, background .18s ease, border-color .18s ease, transform .18s ease;
+}
+body.panel-medico .lateral nav a:hover { transform: translateX(2px); color: #087c83; background: #f2f9f7; }
+body.panel-medico .lateral nav a.nav-activo {
+  color: #087c83;
+  background: linear-gradient(100deg,#e7f5f2,#f2faf8);
+  border-color: #d5ebe6;
+  box-shadow: inset 3px 0 #15948b;
+}
+body.panel-medico .lateral nav a span { width: 21px; text-align: center; color: #64858b; }
+body.panel-medico .especialidad { border-color: #dcebe7; background: linear-gradient(135deg,#f3faf7,#f8fbfa); }
+body.panel-medico .avatar { color: #087c83; background: #e4f3ef; }
+body.panel-medico button.perfil-logout {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 11px;
+  margin: 0;
+  padding: 12px 9px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  color: #31535c;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+body.panel-medico button.perfil-logout:hover {
+  transform: translateY(-1px);
+  border-color: #dcebe7;
+  background: #f4faf8;
+  box-shadow: 0 6px 16px rgba(25,57,72,.06);
+}
+body.panel-medico .perfil-identidad { display: block; min-width: 0; }
+body.panel-medico .perfil-identidad strong { display: block; overflow-wrap: anywhere; font-size: 12px; }
+body.panel-medico .perfil-identidad small { display: block; margin-top: 4px; color: #7b909a; font-size: 10px; }
+body.panel-medico .perfil-accion { display: flex; align-items: center; gap: 4px; margin-top: 7px; color: #087c83; font-size: 10px; font-weight: 700; }
+body.panel-medico .perfil-logout:focus-visible { outline: 3px solid #55aaa2; outline-offset: 3px; }
+@media(min-width:761px) { body.panel-medico .salir.perfil-salir { display: none; } }
+body.panel-medico .barra {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  height: 66px;
+  background: rgba(255,255,255,.88);
+  border-color: #e2ebeb;
+  box-shadow: 0 4px 18px rgba(25,58,68,.035);
+  backdrop-filter: blur(14px);
+  font-size: 12px;
+}
+body.panel-medico .cabecera-etiqueta { padding: 8px 13px; font-size: 11px; }
+body.panel-medico .espacio main {
+  max-width: 1600px;
+  padding: 34px clamp(24px,3.3vw,52px) 35px;
+}
+body.panel-medico .encabezado {
+  position: relative;
+  overflow: hidden;
+  min-height: 155px;
+  padding: clamp(25px,3vw,42px);
+  border: 1px solid #d8eae6;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 88% 10%, rgba(126,200,180,.24), transparent 19rem),
+    linear-gradient(120deg,rgba(255,255,255,.95),rgba(240,249,246,.94));
+  box-shadow: 0 14px 35px rgba(32,85,79,.06);
+}
+body.panel-medico .encabezado::after {
+  position: absolute;
+  right: -42px;
+  bottom: -118px;
+  width: 260px;
+  height: 260px;
+  border: 1px solid rgba(31,143,128,.12);
+  border-radius: 50%;
+  box-shadow: 0 0 0 24px rgba(31,143,128,.035), 0 0 0 48px rgba(31,143,128,.025);
+  content: "";
+  pointer-events: none;
+}
+body.panel-medico .encabezado > div,
+body.panel-medico .encabezado > a { position: relative; z-index: 1; }
+body.panel-medico .encabezado .sobrelinea { font-size: 10px; letter-spacing: .16em; }
+body.panel-medico .encabezado h1 { color: #183f4d; font-size: clamp(30px,3.2vw,43px); letter-spacing: -.055em; }
+body.panel-medico .encabezado p:last-child { max-width: 600px; color: #657e88; font-size: 14px; }
+body.panel-medico .boton {
+  min-height: 46px;
+  padding: 13px 18px;
+  border-radius: 11px;
+  background: linear-gradient(135deg,#138d86,#08747c);
+  box-shadow: 0 7px 16px rgba(8,124,131,.16);
+  font-size: 13px;
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+body.panel-medico .boton:hover { transform: translateY(-2px); filter: brightness(1.03); box-shadow: 0 11px 22px rgba(8,124,131,.23); }
+body.panel-medico .periodo { margin: 21px 2px 13px; font-size: 12px; color: #657f88; }
+body.panel-medico .periodo small { font-size: 11px; }
+body.panel-medico .punto { width: 8px; height: 8px; box-shadow: 0 0 0 4px rgba(48,163,140,.11); }
+body.panel-medico .indicadores { gap: 15px; margin-bottom: 22px; }
+body.panel-medico .indicador {
+  position: relative;
+  min-height: 132px;
+  overflow: hidden;
+  padding: 21px 22px;
+  border: 1px solid #e0e9eb;
+  border-radius: 17px;
+  box-shadow: 0 8px 22px rgba(25,57,72,.045);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+body.panel-medico .indicador::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg,#168b83,#9bd7c1);
+  content: "";
+}
+body.panel-medico .indicador:nth-child(2)::before { background: linear-gradient(90deg,#407b90,#9fc6d5); }
+body.panel-medico .indicador:nth-child(3)::before { background: linear-gradient(90deg,#168b83,#62b6a6); }
+body.panel-medico .indicador.pendiente::before { background: linear-gradient(90deg,#c8923e,#f0cf8f); }
+body.panel-medico .indicador:hover { transform: translateY(-4px); border-color: #c8e2de; box-shadow: 0 16px 32px rgba(25,57,72,.09); }
+body.panel-medico .indicador-enlace { color: inherit; text-decoration: none; cursor: pointer; }
+body.panel-medico .indicador-enlace:focus-visible { outline: 3px solid #55aaa2; outline-offset: 4px; }
+body.panel-medico .indicador > span { color: #536f7b; font-size: 12px; }
+body.panel-medico .indicador strong { margin: 13px 0 8px; color: #1b4350; font-size: 36px; }
+body.panel-medico .indicador small { color: #718792; font-size: 11px; }
+body.panel-medico .powerbi-entrega {
+  border-color: #cfe5df;
+  border-radius: 18px;
+  background: radial-gradient(ellipse at 100% 0,rgba(190,229,216,.34),transparent 45%),linear-gradient(115deg,#fff,#f3faf7);
+  box-shadow: 0 10px 28px rgba(32,85,79,.055);
+}
+body.panel-medico .powerbi-entrega h2 { color: #214851; font-size: 20px; }
+body.panel-medico .powerbi-entrega p:not(.sobrelinea) { color: #657d85; font-size: 13px; }
+body.panel-medico .powerbi-entrega .boton-secundario { border-radius: 11px; box-shadow: none; }
+body.panel-medico .powerbi-entrega a.boton.boton-secundario {
+  color: #fff;
+  background: linear-gradient(135deg,#138d86,#08747c);
+  border-color: transparent;
+  box-shadow: 0 7px 16px rgba(8,124,131,.16);
+}
+body.panel-medico .powerbi-entrega a.boton.boton-secundario:hover {
+  color: #fff;
+  filter: brightness(1.04);
+  box-shadow: 0 11px 22px rgba(8,124,131,.23);
+}
+body.panel-medico .tarjeta:not(.powerbi-entrega) {
+  border-color: #e0e9eb;
+  border-radius: 18px;
+  box-shadow: 0 9px 26px rgba(25,57,72,.045);
+}
+body.panel-medico .titulo-tarjeta h2 { color: #204351; font-size: 18px; }
+body.panel-medico .titulo-tarjeta p { color: #6c828c; font-size: 12px; }
+body.panel-medico .etiqueta { border-radius: 20px; background: #f4f9f8; padding: 8px 12px; font-size: 10px; }
+body.panel-medico .modelo-grid { gap: 22px; }
+body.panel-medico .modelo h3 { color: #31545e; font-size: 13px; }
+body.panel-medico .variables-modelo li {
+  grid-template-columns: 120px minmax(0,1fr);
+  gap: 16px;
+  padding: 11px 12px;
+  border: 1px solid transparent;
+  border-bottom-color: #eaf0f1;
+  border-radius: 9px;
+  font-size: 12px;
+  transition: background .16s ease, border-color .16s ease;
+}
+body.panel-medico .variables-modelo li:hover { background: #f7fbfa; border-color: #e1efec; }
+body.panel-medico .variables-modelo strong { color: #24505a; }
+body.panel-medico .variables-modelo span { color: #617a84; }
+body.panel-medico .modelo-rendimiento { border-color: #dcebe7; border-radius: 14px; background: linear-gradient(145deg,#f6fbf9,#f1f8f6); }
+body.panel-medico .modelo-rendimiento h3 { margin-bottom: 8px; }
+body.panel-medico .modelo-rendimiento dl div { padding: 12px 2px; border-color: #deebe7; }
+body.panel-medico .modelo-rendimiento dt { color: #617981; font-size: 11px; }
+body.panel-medico .modelo-rendimiento dd { color: #214a53; font-size: 12px; }
+body.panel-medico .modelo-rendimiento p { padding: 11px 12px; border-radius: 9px; background: #eaf5f1; color: #58766f; font-size: 11px; }
+body.panel-medico .nota { border: 1px solid #e5ecee; border-radius: 11px; background: #f8fafb; font-size: 11px; }
+body.panel-medico .enlace { font-size: 12px; }
+body.panel-medico .buscador { flex-wrap: wrap; color: #496a75; font-size: 11px; font-weight: 600; }
+body.panel-medico .buscador input { min-height: 44px; width: min(300px,38vw); border: 1px solid #d6e4e7; border-radius: 11px; padding: 11px 13px; background: #fbfdfd; font-size: 13px; transition: border-color .2s ease, box-shadow .2s ease; }
+body.panel-medico .buscador input:focus { outline: none; border-color: #58aaa2; box-shadow: 0 0 0 4px rgba(8,124,131,.12); }
+body.panel-medico .busqueda-feedback { flex-basis: 100%; color: #168078; font-size: 11px; font-weight: 650; }
+body.panel-medico #evaluaciones { scroll-margin-top: 90px; }
+body.panel-medico .tabla-scroll { border: 1px solid #e8eff1; border-radius: 12px; }
+body.panel-medico table { font-size: 12px; }
+body.panel-medico th { padding: 13px 15px; background: #f5f9fa; font-size: 10px; letter-spacing: .08em; }
+body.panel-medico td { padding: 14px 15px; }
+body.panel-medico tbody tr { transition: background .15s ease; }
+body.panel-medico tbody tr:hover { background: #f5faf9; }
+body.panel-medico .cantidad { padding: 6px 10px; border-radius: 20px; font-size: 11px; }
+body.panel-medico .tabla-scroll .enlace { display: inline-flex; padding: 7px 10px; border-radius: 8px; background: #eff8f5; }
+body.panel-medico footer { padding: 12px 0 6px; color: #7a8f97; font-size: 11px; }
+body.panel-medico .panel-progreso {
+  position: fixed;
+  z-index: 30;
+  inset: 0 0 auto;
+  height: 3px;
+  pointer-events: none;
+}
+body.panel-medico .panel-progreso span { display: block; width: 100%; height: 100%; transform: scaleX(0); transform-origin: left; background: linear-gradient(90deg,#26a394,#a2ddc3); }
+body.panel-medico .panel-controles { position: fixed; z-index: 26; right: 22px; bottom: 22px; display: flex; gap: 9px; }
+body.panel-medico .panel-texto {
+  width: 48px; height: 48px; border: 1px solid #d5e7e3; border-radius: 16px;
+  color: #087c83; background: rgba(255,255,255,.96); box-shadow: 0 10px 26px rgba(25,57,72,.15);
+  font: 700 14px/1 'Segoe UI',Arial,sans-serif; cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+body.panel-medico .panel-texto:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(25,57,72,.2); }
+body.panel-medico .panel-volver-arriba {
+  position: fixed;
+  z-index: 25;
+  right: 22px;
+  bottom: 22px;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #d5e7e3;
+  border-radius: 16px;
+  color: #087c83;
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 10px 26px rgba(25,57,72,.15);
+  font-size: 22px;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+}
+body.panel-medico .panel-volver-arriba.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+body.panel-medico .panel-revelado .panel-entrada { opacity: 0; transform: translateY(13px); transition: opacity .45s ease var(--panel-delay,0ms), transform .45s ease var(--panel-delay,0ms); }
+body.panel-medico .panel-revelado .panel-entrada.panel-visible { opacity: 1; transform: translateY(0); }
+body.panel-medico .busqueda-feedback { display: block; margin: 6px 2px 0; color: #168078; font-size: 11px; font-weight: 650; }
+body.panel-medico .busqueda-feedback[hidden] { display: none; }
+body.panel-medico.texto-ampliado main { font-size: 1.12em; }
+body.panel-medico.texto-ampliado .indicador > span,
+body.panel-medico.texto-ampliado .indicador small,
+body.panel-medico.texto-ampliado .variables-modelo li,
+body.panel-medico.texto-ampliado .modelo-rendimiento dt,
+body.panel-medico.texto-ampliado .modelo-rendimiento dd,
+body.panel-medico.texto-ampliado table { font-size: 1.08em; }
+@media(max-width:1100px) {
+  body.panel-medico .espacio main { padding-inline: 24px; }
+  body.panel-medico .encabezado { padding: 28px; }
+  body.panel-medico .indicador { min-height: 120px; padding: 18px; }
+}
+@media(max-width:760px) {
+  body.panel-medico .lateral nav a { min-height: 40px; }
+  body.panel-medico .perfil-logout { display: none; }
+  body.panel-medico .espacio main { padding: 24px 18px 30px; }
+  body.panel-medico .barra { position: static; }
+  body.panel-medico .encabezado { min-height: 0; padding: 24px; border-radius: 18px; }
+  body.panel-medico .encabezado h1 { font-size: 30px; }
+  body.panel-medico .encabezado p:last-child { font-size: 13px; }
+  body.panel-medico .buscador input { width: 100%; }
+  body.panel-medico .powerbi-entrega { padding: 22px; }
+}
+@media(max-width:520px) {
+  body.panel-medico .espacio main { padding-inline: 14px; }
+  body.panel-medico .barra { padding-inline: 16px; }
+  body.panel-medico .cabecera-etiqueta { display: none; }
+  body.panel-medico .encabezado { gap: 14px; }
+  body.panel-medico .encabezado .boton { width: 100%; }
+  body.panel-medico .indicador { min-height: 116px; padding: 15px 13px; }
+  body.panel-medico .indicador > span { font-size: 11px; }
+  body.panel-medico .indicador strong { font-size: 30px; }
+  body.panel-medico .powerbi-acciones { width: 100%; }
+  body.panel-medico .powerbi-acciones .boton { width: 100%; white-space: normal; text-align: center; }
+  body.panel-medico .variables-modelo li { grid-template-columns: 1fr; gap: 4px; }
+  body.panel-medico #pacientes .tabla-scroll { overflow: visible; border: 0; }
+  body.panel-medico #pacientes table,
+  body.panel-medico #pacientes tbody,
+  body.panel-medico #pacientes tr[data-paciente] { display: block; width: 100%; }
+  body.panel-medico #pacientes thead { display: none; }
+  body.panel-medico #pacientes tr[data-paciente] {
+    margin: 0 0 12px;
+    padding: 8px 13px;
+    border: 1px solid #e0e9eb;
+    border-radius: 13px;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(25,57,72,.04);
+  }
+  body.panel-medico #pacientes tr[data-paciente] td {
+    display: grid;
+    grid-template-columns: 88px minmax(0,1fr);
+    gap: 10px;
+    padding: 10px 2px;
+    border-bottom: 1px solid #edf2f3;
+    overflow-wrap: anywhere;
+  }
+  body.panel-medico #pacientes tr[data-paciente] td:last-child { border-bottom: 0; }
+  body.panel-medico #pacientes tr[data-paciente] td::before {
+    content: attr(data-label);
+    color: #71868e;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .03em;
+  }
+  body.panel-medico #pacientes tr:not([data-paciente]) { display: block; }
+  body.panel-medico #pacientes tr:not([data-paciente]) td { display: block; }
+  body.panel-medico .panel-controles { right: 14px; bottom: 14px; }
+  body.panel-medico .panel-texto, body.panel-medico .panel-volver-arriba { width: 44px; height: 44px; border-radius: 14px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  body.panel-medico *, body.panel-medico *::before, body.panel-medico *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+  body.panel-medico .panel-revelado .panel-entrada { opacity: 1; transform: none; transition: none; }
+}

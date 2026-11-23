@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% set mama = tipo == 'mama' %}
+  <title>{{ 'Mama' if mama else 'Pulmón' }} | OncoPredict</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard_interactivo.css') }}">
+  <script src="{{ url_for('static', filename='dashboard_interactivo.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='polish.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard_interactivo_pulido.css') }}">
+  <script src="{{ url_for('static', filename='app_navegacion.js') }}" defer></script>
+</head>
+<body data-specialty="{{ tipo }}">
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="{{ url_for('especialidad', tipo=tipo) }}"><span aria-hidden="true">+</span> OncoPredict</a>
+      <a class="button back app-back" data-app-back href="{{ url_for('especialidad', tipo=tipo) }}"><span aria-hidden="true">←</span> Volver al panel médico</a>
+    </div>
+  </header>
+  <main class="shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">ONCOLOGÍA DE {{ 'MAMA' if mama else 'PULMÓN' }}</p>
+        <h1>{{ 'Análisis de muestras mamarias' if mama else 'Análisis de cáncer de pulmón' }}</h1>
+        <p>{{ 'Compara la morfología de las muestras benignas y malignas del dataset académico.' if mama else 'Explora cómo varía la proporción de diagnósticos positivos en los registros académicos.' }}</p>
+      </div>
+      <a class="button download" href="{{ url_for('descargar_dashboard_powerbi', tipo=tipo) }}">Descargar Power BI</a>
+    </header>
+
+    <section class="panel filters" aria-labelledby="filter-heading">
+      <div class="filter-head">
+        <h2 id="filter-heading">Filtros de análisis</h2>
+        <button type="button" id="reset" class="button reset" disabled>Restablecer filtros</button>
+      </div>
+      {% if mama %}
+        <div class="options" id="diagnosis" role="group" aria-label="Diagnóstico registrado">
+          <button type="button" data-value="" aria-pressed="true">Todas las muestras</button>
+          <button type="button" data-value="Benigno" aria-pressed="false"><i class="swatch benign" aria-hidden="true"></i>Benignas</button>
+          <button type="button" data-value="Maligno" aria-pressed="false"><i class="swatch malignant" aria-hidden="true"></i>Malignas</button>
+        </div>
+      {% else %}
+        <div class="fields" id="lung-filters">
+          <label>País<select id="country"><option value="">Todos los países</option></select></label>
+          <label>Grupo de edad<select id="age"><option value="">Todas las edades</option></select></label>
+          <label>Género<select id="gender"><option value="">Todos los géneros</option></select></label>
+          <label>Tabaquismo<select id="smoking"><option value="">Todas las categorías</option></select></label>
+        </div>
+      {% endif %}
+      <p class="scope" id="scope" role="status"></p>
+    </section>
+
+    <section class="summary" aria-label="Indicadores de la selección">
+      <article class="kpi"><span>{{ 'Muestras' if mama else 'Registros' }}</span><strong id="total">—</strong><small>En la selección actual</small></article>
+      <article class="kpi {{ 'benign-kpi' if mama else 'accent-kpi' }}"><span>{{ 'Benignas' if mama else 'Con diagnóstico positivo' }}</span><strong id="kpi-two">—</strong><small>{{ 'Clasificación registrada' if mama else 'Casos etiquetados como positivos' }}</small></article>
+      <article class="kpi {{ 'malignant-kpi' if mama else 'accent-kpi' }}"><span>{{ 'Malignas' if mama else 'Proporción de positivos' }}</span><strong id="kpi-three">—</strong><small>{{ 'Clasificación registrada' if mama else 'Entre los registros seleccionados' }}</small></article>
+      <article class="kpi {{ 'accent-kpi' if mama else '' }}"><span>{{ 'Proporción maligna' if mama else 'Países representados' }}</span><strong id="kpi-four">—</strong><small>{{ 'Entre las muestras seleccionadas' if mama else 'En la selección actual' }}</small></article>
+    </section>
+
+    <div class="charts">
+      <section class="panel comparison" aria-labelledby="comparison-heading">
+        <div class="panel-heading">
+          <h2 id="comparison-heading">{{ 'Radio y morfología' if mama else 'Proporción de positivos por grupo' }}</h2>
+          <p>{{ 'Cada punto es una muestra. Elige qué medición comparar con el radio medio.' if mama else 'El porcentaje de cada barra usa los registros de su propio grupo. Pulsa una barra para filtrar.' }}</p>
+        </div>
+        {% if mama %}
+          <div class="options switches" id="dimension" role="group" aria-label="Medición comparada con el radio">
+            <button type="button" data-value="texture" aria-pressed="true">Textura</button>
+            <button type="button" data-value="perimeter" aria-pressed="false">Perímetro</button>
+            <button type="button" data-value="area" aria-pressed="false">Área</button>
+          </div>
+          <div class="scatter-wrap">
+            <svg id="scatter" viewBox="0 0 720 330" role="img" aria-labelledby="scatter-title scatter-desc"></svg>
+            <span class="scatter-detail" id="point-detail" hidden></span>
+          </div>
+          <div class="legend" aria-label="Leyenda de diagnósticos">
+            <span><i class="swatch benign" aria-hidden="true"></i>Benigna</span>
+            <span><i class="swatch malignant" aria-hidden="true"></i>Maligna</span>
+          </div>
+        {% else %}
+          <div class="options switches" id="dimension" role="group" aria-label="Agrupar los registros por">
+            <button type="button" data-value="age" aria-pressed="true">Edad</button>
+            <button type="button" data-value="smoking" aria-pressed="false">Tabaquismo</button>
+            <button type="button" data-value="gender" aria-pressed="false">Género</button>
+            <button type="button" data-value="country" aria-pressed="false">País</button>
+          </div>
+          <div class="bars" id="group-bars"></div>
+          <p class="chart-note" id="group-note"></p>
+        {% endif %}
+      </section>
+
+      <section class="panel context" aria-labelledby="context-heading">
+        <div class="panel-heading">
+          <h2 id="context-heading">{{ 'Promedios por diagnóstico' if mama else 'Etapa al diagnóstico' }}</h2>
+          <p id="context-description">{{ 'Mediciones en las muestras de la selección.' if mama else 'Distribución entre los diagnósticos positivos de la selección.' }}</p>
+        </div>
+        {% if mama %}
+          <div class="morphology" id="morphology"></div>
+        {% else %}
+          <div class="bars stage-bars" id="stage-bars"></div>
+          <div id="stage-note" class="context-note"></div>
+        {% endif %}
+      </section>
+    </div>
+
+    <footer>
+      {% if mama %}
+        Dataset académico de 569 muestras. Las mediciones y diagnósticos corresponden a esos registros. El panel es descriptivo y no estima riesgo individual.
+      {% else %}
+        Dataset académico. Se excluyeron 6.917 registros en los que los años de tabaquismo superaban la edad. Las proporciones describen la muestra y no estiman riesgo individual.
+      {% endif %}
+    </footer>
+    <noscript><p>Activa JavaScript en el navegador para usar los filtros y gráficos.</p></noscript>
+  </main>
+  <script type="application/json" id="analysis-data">{{ datos | tojson }}</script>
+</body>
+</html>

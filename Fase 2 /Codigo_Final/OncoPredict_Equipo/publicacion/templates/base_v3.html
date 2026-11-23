@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{% block titulo %}OncoPredict{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='portal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='polish.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='portal_plus.css') }}">
+    <script src="{{ url_for('static', filename='portal_interacciones.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='app_navegacion.js') }}" defer></script>
+</head>
+  <body>
+    <header class="barra{% if request.endpoint == 'clinica.agenda_doctor' %} barra-agenda{% endif %}">
+      <div class="marca-navegacion">
+        {% if request.endpoint == 'clinica.agenda_doctor' %}
+          <a class="app-back" data-app-back href="{{ url_for('panel_doctor') }}"><span aria-hidden="true">←</span> Volver</a>
+        {% endif %}
+        <a class="marca" href="{{ url_for('inicio') }}">OncoPredict<span>Espacio de atención</span></a>
+      </div>
+      {% if cuenta %}
+        <div class="sesion">
+          {% if session.rol == 'doctor' %}
+            <a class="enlace" href="{{ url_for('clinica.agenda_doctor') }}">Mi agenda</a>
+          {% endif %}
+          <span class="sesion-cuenta">
+            <span class="sesion-avatar" aria-hidden="true">{{ cuenta.nombre[:1]|upper }}</span>
+            <span class="sesion-datos">{{ cuenta.nombre }}<small>{{ 'Doctor · ' ~ ('Mama' if cuenta.especializacion == 'mama' else 'Pulmón') if session.rol == 'doctor' else 'Paciente' }}</small></span>
+          </span>
+          <form method="post" action="{{ url_for('salir') }}">
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <button class="secundario">Cerrar sesión</button>
+          </form>
+        </div>
+      {% endif %}
+    </header>
+    <main>
+      {% for mensaje in get_flashed_messages() %}
+        <div class="aviso" role="alert">
+          {{ mensaje }}
+        </div>
+      {% endfor %}
+      {% block contenido %}
+      {% endblock %}
+    </main>
+    <footer>
+      OncoPredict · Proyecto académico de apoyo al análisis oncológico.
+    </footer>
+  </body>
+</html>

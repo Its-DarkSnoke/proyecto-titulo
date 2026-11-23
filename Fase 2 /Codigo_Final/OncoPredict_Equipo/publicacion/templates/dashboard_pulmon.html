@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Panel de pulmón · OncoPredict</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard_mama.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard_pulmon.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard_powerbi.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='polish.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='panel_pulmon_pulido.css') }}">
+    <script src="{{ url_for('static', filename='panel_pulmon_interacciones.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='app_navegacion.js') }}" defer></script>
+</head>
+  <body class="panel-pulmon panel-medico">
+    <aside class="lateral">
+      <a class="marca" href="{{ url_for('inicio') }}"><span class="marca-icono">+</span>OncoPredict<span class="marca-punto">.</span></a>
+      <div class="area">ESPACIO MÉDICO</div>
+      <nav aria-label="Navegación médica">
+        <a class="nav-activo" aria-current="page" href="{{ url_for('especialidad', tipo='pulmon') }}"><span aria-hidden="true">▦</span> Resumen general</a>
+        <a href="#modelo"><span aria-hidden="true">◷</span> Modelo de pulmón</a>
+        <a href="#powerbi"><span aria-hidden="true">◫</span> Análisis académico</a>
+        <a href="#pacientes"><span aria-hidden="true">♧</span> Mis pacientes</a>
+        <a href="{{ url_for('exportar_evaluaciones_pulmon') }}"><span aria-hidden="true">⇩</span> Datos para Power BI</a>
+        <a href="{{ url_for('clinica.agenda_doctor') }}"><span aria-hidden="true">＋</span> Gestionar agenda</a>
+      </nav>
+      <div class="especialidad">
+        <span class="punto"></span>
+        <div>Oncología de pulmón<small>Tu especialidad</small></div>
+      </div>
+      <button class="perfil perfil-logout" type="submit" form="form-cerrar-sesion" title="Cerrar sesión" aria-label="Cerrar sesión de {{ cuenta.nombre }}">
+        <span class="avatar">{{ cuenta.nombre[:1]|upper }}</span>
+        <span class="perfil-identidad"><strong>{{ cuenta.nombre }}</strong><small>Doctor · Pulmón</small><span class="perfil-accion">Cerrar sesión <span aria-hidden="true">↗</span></span></span>
+      </button>
+      <form class="salir perfil-salir" id="form-cerrar-sesion" action="{{ url_for('salir') }}" method="post">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <button>Cerrar sesión <span aria-hidden="true">↗</span></button>
+      </form>
+    </aside>
+
+    <div class="espacio">
+      <header class="barra">
+        <span>Área médica <span class="separador">/</span> <strong>Pulmón</strong></span>
+        <span class="cabecera-etiqueta">Panel del doctor conectado</span>
+      </header>
+      <main>
+        {% for mensaje in get_flashed_messages() %}
+          <div class="aviso" role="alert">{{ mensaje }}</div>
+        {% endfor %}
+
+        <section class="encabezado">
+          <div>
+            <p class="sobrelinea">ONCOLOGÍA DE PULMÓN</p>
+            <h1>Tu espacio de atención.</h1>
+            <p>Consulta tus pacientes, registra evaluaciones de pulmón y descarga datos para Power BI.</p>
+          </div>
+          <a class="boton" href="{{ url_for('clinica.agenda_doctor') }}"><span aria-hidden="true">＋</span> Gestionar agenda</a>
+        </section>
+
+        <div class="periodo"><span><span class="punto"></span> Información del doctor conectado</span><small>Modelo experimental · versión académica</small></div>
+        <section class="indicadores" aria-label="Resumen del panel y evaluación del modelo">
+          <a class="indicador indicador-enlace" href="#pacientes"><span>Pacientes vinculados</span><strong>{{ pacientes|length }}</strong><small>Fichas disponibles en tu atención</small></a>
+          <a class="indicador indicador-enlace" href="#modelo"><span>Variables del modelo</span><strong>11</strong><small>Datos previos al diagnóstico</small></a>
+          <a class="indicador indicador-enlace" href="#modelo"><span>Casos detectados en prueba</span><strong>66 %</strong><small>Recall de la clase positiva</small></a>
+          <a class="indicador indicador-enlace pendiente" href="#modelo"><span>Precisión de alertas en prueba</span><strong>7 %</strong><small>El resultado requiere revisión médica</small></a>
+        </section>
+
+        <section class="tarjeta powerbi-entrega" id="powerbi" aria-labelledby="titulo-powerbi-pulmon">
+          <div>
+            <p class="sobrelinea">DATASET ACADÉMICO</p>
+            <h2 id="titulo-powerbi-pulmon">Análisis de cáncer de pulmón</h2>
+            <p>Explora los diagnósticos registrados por edad, tabaquismo, género y país.</p>
+          </div>
+          <div class="powerbi-acciones">
+            <a class="boton" href="{{ url_for('dashboard_interactivo', tipo='pulmon') }}">Abrir dashboard interactivo</a>
+            <a class="boton boton-secundario" href="{{ url_for('descargar_dashboard_powerbi', tipo='pulmon') }}">Descargar Power BI</a>
+          </div>
+        </section>
+
+        <section class="tarjeta modelo" id="modelo" aria-labelledby="titulo-modelo">
+          <div class="titulo-tarjeta">
+            <div>
+              <h2 id="titulo-modelo">Modelo experimental de pulmón</h2>
+              <p>Clasificación exploratoria a partir de factores registrados antes del diagnóstico.</p>
+            </div>
+            <span class="etiqueta">Disponible en cada ficha</span>
+          </div>
+          <div class="modelo-grid">
+            <div>
+              <h3>Información que recibe</h3>
+              <ul class="variables-modelo">
+                <li><strong>Persona</strong><span>Edad y género</span></li>
+                <li><strong>Tabaquismo</strong><span>Fumador, años fumando, cigarrillos por día y exposición pasiva</span></li>
+                <li><strong>Antecedentes</strong><span>Historia familiar de cáncer de pulmón</span></li>
+                <li><strong>Exposición</strong><span>Contaminación del aire, exposición ocupacional y contaminación interior</span></li>
+                <li><strong>Contexto</strong><span>Acceso a atención de salud</span></li>
+              </ul>
+            </div>
+            <div class="modelo-rendimiento">
+              <h3>Evaluación en datos de prueba</h3>
+              <dl>
+                <div><dt>Casos positivos identificados</dt><dd>1.123 de 1.693</dd></div>
+                <div><dt>Alertas sin diagnóstico positivo</dt><dd>14.903</dd></div>
+                <div><dt>Casos positivos no identificados</dt><dd>570</dd></div>
+                <div><dt>Área bajo la curva ROC</dt><dd>0,652</dd></div>
+              </dl>
+              <p>La puntuación del modelo no es una probabilidad clínica ni confirma o descarta cáncer.</p>
+            </div>
+          </div>
+          <p class="nota">Proyecto académico. La etapa del cáncer, la supervivencia, la mortalidad y el tratamiento se excluyen de la entrada porque se conocen después del diagnóstico. La evaluación y las decisiones clínicas corresponden al profesional.</p>
+          <a class="enlace" href="{{ url_for('exportar_evaluaciones_pulmon') }}">Descargar evaluaciones para Power BI (CSV) ↗</a>
+        </section>
+
+        <section class="tarjeta" id="pacientes" aria-labelledby="titulo-pacientes">
+          <div class="titulo-tarjeta">
+            <div>
+              <h2 id="titulo-pacientes">Mis pacientes <span class="cantidad">{{ pacientes|length }}</span></h2>
+              <p>Abre una ficha para revisar los datos vinculados a tu atención.</p>
+            </div>
+            <label class="buscador" for="buscar">Buscar paciente
+              <input id="buscar" type="search" placeholder="Nombre, RUT o correo" autocomplete="off">
+            </label>
+          </div>
+          <div class="tabla-scroll">
+            <table>
+              <thead><tr><th>Paciente</th><th>RUT</th><th>Correo</th><th>Acción</th></tr></thead>
+              <tbody id="lista-pacientes">
+                {% for paciente in pacientes %}
+                  <tr data-paciente>
+                    <td class="nombre" data-label="Paciente">{{ paciente.nombre }}</td>
+                    <td data-label="RUT">{{ paciente.rut }}</td>
+                    <td data-label="Correo">{{ paciente.correo }}</td>
+                    <td data-label="Acción"><a class="enlace" href="{{ url_for('ficha_doctor', paciente_id=paciente.id) }}">Abrir ficha ↗</a></td>
+                  </tr>
+                {% else %}
+                  <tr><td colspan="4" class="vacio-tabla">Los pacientes aparecerán cuando los incorpores desde una atención.</td></tr>
+                {% endfor %}
+                <tr id="sin-coincidencias" hidden><td colspan="4" class="vacio-tabla">No hay pacientes que coincidan con la búsqueda.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p id="resultado-busqueda" class="lectores" aria-live="polite"></p>
+        </section>
+        <footer>OncoPredict · Proyecto académico de apoyo al análisis oncológico.</footer>
+      </main>
+    </div>
+    <script>
+      const entrada = document.getElementById('buscar');
+      const filas = [...document.querySelectorAll('[data-paciente]')];
+      const normalizar = texto => texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      entrada.addEventListener('input', () => {
+        const consulta = normalizar(entrada.value.trim());
+        let visibles = 0;
+        filas.forEach(fila => {
+          fila.hidden = !normalizar([...fila.cells].slice(0, 3).map(celda => celda.textContent).join(' ')).includes(consulta);
+          if (!fila.hidden) visibles++;
+        });
+        document.getElementById('sin-coincidencias').hidden = !filas.length || visibles > 0;
+        document.getElementById('resultado-busqueda').textContent = `${visibles} pacientes encontrados`;
+      });
+    </script>
+  </body>
+</html>
